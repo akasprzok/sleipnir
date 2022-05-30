@@ -12,7 +12,7 @@ defmodule Sleipnir do
       :world
 
   """
-  def hello do
-    :world
+  def push(labels, payload) do
+
   end
 end

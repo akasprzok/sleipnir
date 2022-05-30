@@ -1,13 +1,21 @@
 defmodule Sleipnir.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+  @url "https://github.com/akasprzok/sleipnir"
+
   def project do
     [
       app: :sleipnir,
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+
+      description: description(),
+      package: package(),
+      source_url: @url,
+      docs: docs()
     ]
   end
 
@@ -21,8 +29,31 @@ defmodule Sleipnir.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:ex_doc, "~> 0.28", only: :dev, runtime: false},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:git_hooks, "~> 0.7", only: :dev, runtime: false},
+      {:google_protos, "~> 0.1"}
+    ]
+  end
+
+  defp description do
+    """
+    Sleipnir is a Loki client and Logger backend.
+    """
+  end
+
+  defp package do
+    [
+      licenses: ["MIT"],
+      links: %{"GitHub" => @url},
+      maintainers: ["Andreas Kasprzok"]
+    ]
+  end
+
+  defp docs do
+    [
+      main: "Deucalion",
+      extras: ["README.md"]
     ]
   end
 end
