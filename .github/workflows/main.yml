@@ -1,4 +1,4 @@
-name: Deucalion CI
+name: main
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
