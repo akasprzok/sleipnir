@@ -32,13 +32,15 @@ defmodule Sleipnir.MixProject do
       {:ex_doc, "~> 0.28", only: :dev, runtime: false},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:git_hooks, "~> 0.7", only: :dev, runtime: false},
-      {:google_protos, "~> 0.1"}
+      {:protobuf, "~> 0.10.0"},
+      {:google_protos, "~> 0.1"},
+      {:snappyer, "~> 1.2"}
     ]
   end
 
   defp description do
     """
-    Sleipnir is a Loki client and Logger backend.
+    Sleipnir is a Loki client.
     """
   end
 
