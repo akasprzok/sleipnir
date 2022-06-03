@@ -31,10 +31,12 @@ defmodule Sleipnir.MixProject do
     [
       {:ex_doc, "~> 0.28", only: :dev, runtime: false},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:git_hooks, "~> 0.7", only: :dev, runtime: false},
+      {:git_hooks, "~> 0.7", only: [:dev, :test], runtime: false},
       {:protobuf, "~> 0.10.0"},
       {:google_protos, "~> 0.1"},
-      {:snappyer, "~> 1.2"}
+      {:snappyer, "~> 1.2"},
+      {:tesla, "~> 1.4"},
+      {:hackney, "~> 1.17"}
     ]
   end
 
@@ -54,7 +56,7 @@ defmodule Sleipnir.MixProject do
 
   defp docs do
     [
-      main: "Deucalion",
+      main: "Sleipnir",
       extras: ["README.md"]
     ]
   end
