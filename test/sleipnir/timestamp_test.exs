@@ -6,7 +6,13 @@ defmodule Sleipnir.TimestampTest do
 
   test "can be derived from Logger time" do
     naive = ~N[2000-01-01 23:00:07]
-    from_logger_format = from({{naive.year, naive.month, naive.day}, {naive.hour, naive.minute, naive.second, elem(naive.microsecond, 0) *1000}})
+
+    from_logger_format =
+      from(
+        {{naive.year, naive.month, naive.day},
+         {naive.hour, naive.minute, naive.second, elem(naive.microsecond, 0) * 1000}}
+      )
+
     from_naive = from(naive)
     assert :eq == compare(from_naive, from_logger_format)
   end
@@ -24,7 +30,8 @@ defmodule Sleipnir.TimestampTest do
   end
 
   def permute([]), do: [[]]
+
   def permute(list) do
-    for elem <- list, rest <- permute(list--[elem]), do: [elem|rest]
+    for elem <- list, rest <- permute(list -- [elem]), do: [elem | rest]
   end
 end

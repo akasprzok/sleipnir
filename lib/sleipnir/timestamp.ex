@@ -21,7 +21,10 @@ defmodule Sleipnir.Timestamp do
     Timestamp.new!(seconds: seconds, nanos: microseconds * 1000)
   end
 
-  def compare(%Timestamp{seconds: seconds1, nanos: nanos1}, %Timestamp{seconds: seconds2, nanos: nanos2}) do
+  def compare(%Timestamp{seconds: seconds1, nanos: nanos1}, %Timestamp{
+        seconds: seconds2,
+        nanos: nanos2
+      }) do
     case {{seconds1, nanos1}, {seconds2, nanos2}} do
       {first, second} when first > second -> :gt
       {first, second} when first < second -> :lt
