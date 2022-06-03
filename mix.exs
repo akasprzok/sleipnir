@@ -11,7 +11,7 @@ defmodule Sleipnir.MixProject do
       elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-
+      preferred_cli_env: preferred_cli_env(),
       description: description(),
       package: package(),
       source_url: @url,
@@ -58,6 +58,12 @@ defmodule Sleipnir.MixProject do
     [
       main: "Sleipnir",
       extras: ["README.md"]
+    ]
+  end
+
+  defp preferred_cli_env do
+    [
+      {:test, :test}
     ]
   end
 end

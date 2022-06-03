@@ -14,8 +14,10 @@ defmodule Sleipnir.Timestamp do
   :snappyer
 
   def from(%NaiveDateTime{} = time) do
-    {seconds, microseconds} = time
-    |> NaiveDateTime.to_gregorian_seconds()
-    Timestamp.new!(seconds: seconds, nanoseconds: microseconds*1000)
+    {seconds, microseconds} =
+      time
+      |> NaiveDateTime.to_gregorian_seconds()
+
+    Timestamp.new!(seconds: seconds, nanoseconds: microseconds * 1000)
   end
 end
