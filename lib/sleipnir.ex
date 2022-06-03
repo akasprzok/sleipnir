@@ -4,17 +4,23 @@ defmodule Sleipnir do
   """
 
   alias Google.Protobuf.Timestamp
+  alias Logproto.{StreamAdapter, EntryAdapter}
 
   @type labels :: list({String.t(), String.t()})
 
-  @spec stream(labels(), Logproto.EntryAdapter.t()) :: Logproto.StreamAdapter.t()
+  @spec stream(labels(), EntryAdapter.t()) :: StreamAdapter.t()
   def stream(labels, entries) do
-    labels = labels |> Enum.map(&to_kv/1) |> Enum.join(",") |> parenthesize
+    labels = labels |> Enum.map(&to_kv/1) |> Enum.reverse |> Enum.join(",") |> parenthesize
 
-    Logproto.StreamAdapter.new(
+    StreamAdapter.new(
       labels: labels,
-      entries: entries
+      entries: sort_entries(entries)
     )
+  end
+
+  defp sort_entries(entries) when is_list(entries) do
+    entries
+    |> Enum.sort_by(fn %EntryAdapter{timestamp: timestamp}-> timestamp end, &<=/2)
   end
 
   defp parenthesize(labels) do

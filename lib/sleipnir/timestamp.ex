@@ -7,7 +7,7 @@ defmodule Sleipnir.Timestamp do
 
   @spec from(Logger.Formatter.time() | NaiveDateTime.t()) :: Timestamp.t()
   def from({{yy, mm, dd}, {hh, mi, ss, ms}}) do
-    NaiveDateTime.from_erl!({{yy, mm, dd}, {hh, mi, ss}, {ms, 3}})
+    NaiveDateTime.from_erl!({{yy, mm, dd}, {hh, mi, ss}}, {ms, 3})
     |> from()
   end
 
@@ -18,6 +18,14 @@ defmodule Sleipnir.Timestamp do
       time
       |> NaiveDateTime.to_gregorian_seconds()
 
-    Timestamp.new!(seconds: seconds, nanoseconds: microseconds * 1000)
+    Timestamp.new!(seconds: seconds, nanos: microseconds * 1000)
+  end
+
+  def compare(%Timestamp{seconds: seconds1, nanos: nanos1}, %Timestamp{seconds: seconds2, nanos: nanos2}) do
+    case {{seconds1, nanos1}, {seconds2, nanos2}} do
+      {first, second} when first > second -> :gt
+      {first, second} when first < second -> :lt
+      _ -> :eq
+    end
   end
 end
