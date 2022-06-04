@@ -33,7 +33,6 @@ defmodule Sleipnir.MixProject do
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:git_hooks, "~> 0.7", only: [:dev, :test], runtime: false},
       {:protobuf, "~> 0.10.0"},
-      {:google_protos, "~> 0.1"},
       {:snappyer, "~> 1.2"},
       {:tesla, "~> 1.4"},
       {:hackney, "~> 1.17"}

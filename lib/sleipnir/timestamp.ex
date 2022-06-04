@@ -11,14 +11,17 @@ defmodule Sleipnir.Timestamp do
     |> from()
   end
 
-  :snappyer
-
   def from(%NaiveDateTime{} = time) do
     {seconds, microseconds} =
       time
       |> NaiveDateTime.to_gregorian_seconds()
 
     Timestamp.new!(seconds: seconds, nanos: microseconds * 1000)
+  end
+
+  @spec now :: Timestamp.t()
+  def now do
+    NaiveDateTime.utc_now() |> from()
   end
 
   def compare(%Timestamp{seconds: seconds1, nanos: nanos1}, %Timestamp{

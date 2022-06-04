@@ -24,3 +24,6 @@ sleipnir-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# VSC config
+/.vscode/

@@ -15,3 +15,5 @@ if Mix.env() != :prod do
       ]
     ]
 end
+
+import_config "#{config_env()}.exs"

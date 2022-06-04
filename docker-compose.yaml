@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  loki:
+    image: grafana/loki:2.5.0
+    ports:
+      - "3100:3100"
+    volumes:
+    - ./docker-compose/loki.yml:/etc/config/loki.yml
+    #command: -config.file=/etc/loki/local-config.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+    - ./docker-compose/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+    ports:
+      - "3000:3000"
