@@ -10,13 +10,13 @@ defmodule Sleipnir.Client do
 
   def push_path, do: @push_path
 
-  def client(baseurl, adapter \\ Tesla.Adapter.Hackney) do
+  def client(baseurl) do
     middleware = [
       {Tesla.Middleware.Headers, [{"Content-Type", "application/x-protobuf"}]},
       {Tesla.Middleware.BaseUrl, baseurl}
     ]
 
-    Tesla.client(middleware, adapter)
+    Tesla.client(middleware, Tesla.Adapter.Hackney)
   end
 
   @spec push(__MODULE__.t(), Sleipnir.request()) :: {:ok, response()} | {:error, term()}
