@@ -2,6 +2,8 @@ defmodule Sleipnir.ClientTest do
   use ExUnit.Case, async: true
   doctest Sleipnir.Client
 
+  alias Logproto.{PushRequest, StreamAdapter}
+
   import Sleipnir.Client
 
   defp endpoint_url(port), do: "http://localhost:#{port}"
@@ -22,15 +24,29 @@ defmodule Sleipnir.ClientTest do
     setup [:bypass]
 
     test "smoke test", %{client: client, bypass: bypass} do
-      body = "blablabla"
+      labels = [{"service", "sleipnir"}]
+      entry = Sleipnir.entry("blablabla")
+      stream = Sleipnir.stream(labels, [entry])
+      request = Sleipnir.request(stream)
 
       Bypass.expect_once(
         bypass,
         "POST",
         "/loki/api/v1/push",
         fn conn ->
-          {:ok, sent_body, _conn} = Plug.Conn.read_body(conn)
-          assert sent_body == body
+          {:ok, payload, _conn} = Plug.Conn.read_body(conn)
+          {:ok, decompressed_payload} = :snappyer.decompress(payload)
+
+          %PushRequest{
+            streams: [
+              %StreamAdapter{
+                entries: [
+                  ^entry
+                ],
+                labels: ~s({service="sleipnir"})
+              }
+            ]
+          } = decompressed_payload |> PushRequest.decode()
 
           Plug.Conn.resp(
             conn,
@@ -40,7 +56,7 @@ defmodule Sleipnir.ClientTest do
         end
       )
 
-      client |> push("blablabla")
+      client |> push(request)
     end
   end
 end

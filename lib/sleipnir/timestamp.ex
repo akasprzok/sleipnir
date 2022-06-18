@@ -11,6 +11,14 @@ defmodule Sleipnir.Timestamp do
     |> from()
   end
 
+  def from(%DateTime{} = time) do
+    {seconds, microseconds} =
+      time
+      |> DateTime.to_gregorian_seconds()
+
+    Timestamp.new!(seconds: seconds, nanos: microseconds * 1000)
+  end
+
   def from(%NaiveDateTime{} = time) do
     {seconds, microseconds} =
       time

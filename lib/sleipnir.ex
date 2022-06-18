@@ -4,32 +4,43 @@ defmodule Sleipnir do
   """
 
   alias Logproto.{EntryAdapter, PushRequest, StreamAdapter}
+  alias Sleipnir.Timestamp
 
   @type labels :: list({String.t(), String.t()})
-  @type request :: binary()
+
+  @spec entry(term(), DateTime.t() | NaiveDateTime.t() | Google.Protobuf.Timestamp.t()) ::
+          EntryAdapter.t()
+  def entry(line, time \\ Timestamp.now())
+
+  def entry(line, %DateTime{} = timestamp) do
+    entry(line, Timestamp.from(timestamp))
+  end
+
+  def entry(line, %NaiveDateTime{} = timestamp) do
+    entry(line, Timestamp.from(timestamp))
+  end
+
+  def entry(line, %Google.Protobuf.Timestamp{} = timestamp) do
+    EntryAdapter.new!(line: line, timestamp: timestamp)
+  end
 
   @spec stream(labels(), EntryAdapter.t()) :: StreamAdapter.t()
   def stream(labels, entries) do
     labels = labels |> Enum.map(&to_kv/1) |> Enum.reverse() |> Enum.join(",") |> parenthesize
 
-    StreamAdapter.new(
+    StreamAdapter.new!(
       labels: labels,
       entries: sort_entries(entries)
     )
   end
 
-  @spec pack(StreamAdapter.t() | list(StreamAdapter.t())) :: request()
-  def pack(%StreamAdapter{} = stream) do
-    pack([stream])
+  @spec request(StreamAdapter.t() | list(StreamAdapter.t())) :: PushRequest.t()
+  def request(%StreamAdapter{} = stream) do
+    request([stream])
   end
 
-  def pack(streams) when is_list(streams) do
-    {:ok, packed_request} =
-      PushRequest.new(streams: streams)
-      |> PushRequest.encode()
-      |> :snappyer.compress()
-
-    packed_request
+  def request(streams) when is_list(streams) do
+    PushRequest.new!(streams: streams)
   end
 
   defp sort_entries(%EntryAdapter{} = entry), do: [entry]
