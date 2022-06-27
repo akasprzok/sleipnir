@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/akasprzok/sleipnir/badge.svg?branch=main)](https://coveralls.io/github/akasprzok/sleipnir?branch=main)
+
 # Sleipnir
 
 A Loki client.

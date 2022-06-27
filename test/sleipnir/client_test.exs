@@ -2,22 +2,16 @@ defmodule Sleipnir.ClientTest do
   use ExUnit.Case, async: true
   doctest Sleipnir.Client
 
+  alias Logproto.{PushRequest, StreamAdapter}
+
   import Sleipnir.Client
-  import Tesla.Mock
 
-  @base_url "https://google.com"
+  defp endpoint_url(port), do: "http://localhost:#{port}"
 
-  def mocks(_) do
-    client = client(@base_url, Tesla.Mock)
-
-    url = @base_url <> push_path()
-
-    mock(fn
-      %{method: :post, url: ^url} ->
-        %Tesla.Env{status: 204}
-    end)
-
-    %{client: client}
+  defp bypass(_) do
+    bypass = Bypass.open()
+    client = bypass.port |> endpoint_url() |> client()
+    {:ok, bypass: bypass, client: client}
   end
 
   describe "client/1" do
@@ -27,12 +21,42 @@ defmodule Sleipnir.ClientTest do
   end
 
   describe "push/1" do
-    setup [:mocks]
+    setup [:bypass]
 
-    test "let's mock some stuff I guess", %{client: client} do
-      {:ok, %Tesla.Env{} = response} = client |> push("blablabla")
+    test "smoke test", %{client: client, bypass: bypass} do
+      labels = [{"service", "sleipnir"}]
+      entry = Sleipnir.entry("blablabla")
+      stream = Sleipnir.stream(labels, [entry])
+      request = Sleipnir.request(stream)
 
-      assert response.status == 204
+      Bypass.expect_once(
+        bypass,
+        "POST",
+        "/loki/api/v1/push",
+        fn conn ->
+          {:ok, payload, _conn} = Plug.Conn.read_body(conn)
+          {:ok, decompressed_payload} = :snappyer.decompress(payload)
+
+          %PushRequest{
+            streams: [
+              %StreamAdapter{
+                entries: [
+                  ^entry
+                ],
+                labels: ~s({service="sleipnir"})
+              }
+            ]
+          } = decompressed_payload |> PushRequest.decode()
+
+          Plug.Conn.resp(
+            conn,
+            204,
+            ""
+          )
+        end
+      )
+
+      client |> push(request)
     end
   end
 end

@@ -15,7 +15,16 @@ defmodule Sleipnir.MixProject do
       description: description(),
       package: package(),
       source_url: @url,
-      docs: docs()
+      docs: docs(),
+
+      # Testing
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -35,7 +44,9 @@ defmodule Sleipnir.MixProject do
       {:protobuf, "~> 0.10.0"},
       {:snappyer, "~> 1.2"},
       {:tesla, "~> 1.4"},
-      {:hackney, "~> 1.17"}
+      {:hackney, "~> 1.17"},
+      {:bypass, "~> 2.1", only: :test},
+      {:excoveralls, "~> 0.10", only: :test}
     ]
   end
 
