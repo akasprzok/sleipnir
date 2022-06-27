@@ -6,6 +6,8 @@ defmodule Sleipnir do
   alias Logproto.{EntryAdapter, PushRequest, StreamAdapter}
   alias Sleipnir.Timestamp
 
+  defdelegate client(base_url, opts \\ []), to: Sleipnir.Client, as: :new
+
   @type labels :: list({String.t(), String.t()})
 
   @doc """
@@ -31,11 +33,13 @@ defmodule Sleipnir do
   A stream consists of one or more entries under a common set of labels.
   """
   @spec stream(labels(), EntryAdapter.t() | list(EntryAdapter.t())) :: StreamAdapter.t()
-  def stream(labels, %EntryAdapter{} = entry) do
-    stream(labels, [entry])
+  def stream(%EntryAdapter{} = entry, labels) do
+    entry
+    |> List.wrap()
+    |> stream(labels)
   end
 
-  def stream(labels, entries) when is_list(entries) do
+  def stream(entries, labels) when is_list(entries) do
     labels = labels |> Enum.map(&to_kv/1) |> Enum.reverse() |> Enum.join(",") |> parenthesize
 
     StreamAdapter.new!(
@@ -44,8 +48,10 @@ defmodule Sleipnir do
     )
   end
 
-  def stream(labels, line) when is_binary(line) do
-    stream(labels, entry(line))
+  def stream(line, labels) when is_binary(line) do
+    line
+    |> entry()
+    |> stream(labels)
   end
 
   @doc """
@@ -57,13 +63,17 @@ defmodule Sleipnir do
           String.t(),
           DateTime.t() | NaiveDateTime.t() | Google.Protobuf.Timestamp.t()
         ) :: StreamAdapter.t()
-  def stream(labels, line, timestamp) do
-    stream(labels, entry(line, timestamp))
+  def stream(line, labels, timestamp) do
+    line
+    |> entry(timestamp)
+    |> stream(labels)
   end
 
   @spec request(StreamAdapter.t() | list(StreamAdapter.t())) :: PushRequest.t()
   def request(%StreamAdapter{} = stream) do
-    request([stream])
+    stream
+    |> List.wrap()
+    |> request()
   end
 
   def request(streams) when is_list(streams) do

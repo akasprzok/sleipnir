@@ -12,8 +12,8 @@ defmodule Sleipnir.Client do
 
   def push_path, do: @push_path
 
-  @spec client(String.t(), Keyword.t()) :: __MODULE__.t()
-  def client(baseurl, opts \\ []) do
+  @spec new(String.t(), Keyword.t()) :: __MODULE__.t()
+  def new(baseurl, opts \\ []) do
     middleware = [
       {Tesla.Middleware.Headers, headers(opts)},
       {Tesla.Middleware.BaseUrl, baseurl}

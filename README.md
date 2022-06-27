@@ -19,4 +19,21 @@ end
 
 Documentation may be found at <https://hexdocs.pm/sleipnir>.
 
+## Usage
 
+Currently only supports the Loki push API.
+
+First, get a client:
+
+```elixir
+client = Sleipnir.client("http://localhost:3100", org_id: "tenant1")
+```
+
+Then, create a PushRequest and push it:
+
+```elixir
+request = "I am a log" |> Sleipnir.entry() |> Sleipnir.stream([{"service", "xyz"}]) |> Sleipnir.request()
+Sleipnir.Client.push(client, request)
+```
+
+There are a variety of ways to create a request. Consult the docs for more info!
