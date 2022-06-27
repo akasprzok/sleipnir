@@ -27,3 +27,5 @@ sleipnir-*.tar
 
 # VSC config
 /.vscode/
+
+/.data

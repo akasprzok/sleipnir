@@ -25,6 +25,7 @@ defmodule Sleipnir.Timestamp do
     {seconds, microseconds} =
       time
       |> NaiveDateTime.to_gregorian_seconds()
+      |> to_epoch()
 
     Timestamp.new!(seconds: seconds, nanos: microseconds * 1000)
   end
@@ -43,5 +44,9 @@ defmodule Sleipnir.Timestamp do
       {first, second} when first < second -> :lt
       _ -> :eq
     end
+  end
+
+  defp to_epoch({gregorian_seconds, microseconds}) when is_integer(gregorian_seconds) do
+    {gregorian_seconds - 62167219200, microseconds}
   end
 end

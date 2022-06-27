@@ -8,6 +8,9 @@ defmodule Sleipnir do
 
   @type labels :: list({String.t(), String.t()})
 
+  @doc """
+  Returns an entry, which is a log line/string at a given time.
+  """
   @spec entry(term(), DateTime.t() | NaiveDateTime.t() | Google.Protobuf.Timestamp.t()) ::
           EntryAdapter.t()
   def entry(line, time \\ Timestamp.now())
@@ -24,14 +27,34 @@ defmodule Sleipnir do
     EntryAdapter.new!(line: line, timestamp: timestamp)
   end
 
-  @spec stream(labels(), EntryAdapter.t()) :: StreamAdapter.t()
-  def stream(labels, entries) do
+  @doc """
+  A stream consists of one or more entries under a common set of labels.
+  """
+  @spec stream(labels(), EntryAdapter.t() | list(EntryAdapter.t())) :: StreamAdapter.t()
+  def stream(labels, %EntryAdapter{} = entry) do
+    stream(labels, [entry])
+  end
+
+  def stream(labels, entries) when is_list(entries) do
     labels = labels |> Enum.map(&to_kv/1) |> Enum.reverse() |> Enum.join(",") |> parenthesize
 
     StreamAdapter.new!(
       labels: labels,
       entries: sort_entries(entries)
     )
+  end
+
+  def stream(labels, line) when is_binary(line) do
+    stream(labels, entry(line))
+  end
+
+  @doc """
+  Returns a stream for a single entry from a line and timestamp.
+  To create a stream of multiple entries, take a look at stream/2.
+  """
+  @spec stream(labels(), String.t(), DateTime.t() | NaiveDateTime.t() | Google.Protobuf.Timestamp.t()) :: StreamAdapter.t()
+  def stream(labels, line, timestamp) do
+    stream(labels, entry(line, timestamp))
   end
 
   @spec request(StreamAdapter.t() | list(StreamAdapter.t())) :: PushRequest.t()

@@ -12,10 +12,11 @@ defmodule Sleipnir.Client do
 
   def push_path, do: @push_path
 
-  def client(baseurl) do
+  @spec client(String.t(), Keyword.t()) :: __MODULE__.t()
+  def client(baseurl, opts \\ []) do
     middleware = [
-      {Tesla.Middleware.Headers, [{"Content-Type", "application/x-protobuf"}]},
-      {Tesla.Middleware.BaseUrl, baseurl}
+      {Tesla.Middleware.Headers, headers(opts)},
+      {Tesla.Middleware.BaseUrl, baseurl},
     ]
 
     Tesla.client(middleware, Tesla.Adapter.Hackney)
@@ -30,5 +31,17 @@ defmodule Sleipnir.Client do
 
     client
     |> Tesla.post(@push_path, payload)
+  end
+
+  defp headers(opts) do
+    [{"Content-Type", "application/x-protobuf"}]
+    |> Enum.concat(maybe_add_org_id(opts))
+  end
+
+  defp maybe_add_org_id(opts) do
+    case Keyword.get(opts, :org_id) do
+      nil -> []
+      org_id -> [{"X-Scope-OrgID", org_id}]
+    end
   end
 end
