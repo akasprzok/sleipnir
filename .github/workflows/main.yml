@@ -2,6 +2,7 @@ name: main
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MIX_ENV: test
 
 on:
   push:
@@ -37,6 +38,4 @@ jobs:
       - name: Credo strict
         run: mix credo --strict
       - name: Run Tests
-        env:
-          MIX_ENV: test
         run: mix coveralls.github
