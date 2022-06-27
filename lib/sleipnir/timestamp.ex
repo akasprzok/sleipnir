@@ -47,6 +47,6 @@ defmodule Sleipnir.Timestamp do
   end
 
   defp to_epoch({gregorian_seconds, microseconds}) when is_integer(gregorian_seconds) do
-    {gregorian_seconds - 62167219200, microseconds}
+    {gregorian_seconds - 62_167_219_200, microseconds}
   end
 end

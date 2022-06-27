@@ -52,7 +52,11 @@ defmodule Sleipnir do
   Returns a stream for a single entry from a line and timestamp.
   To create a stream of multiple entries, take a look at stream/2.
   """
-  @spec stream(labels(), String.t(), DateTime.t() | NaiveDateTime.t() | Google.Protobuf.Timestamp.t()) :: StreamAdapter.t()
+  @spec stream(
+          labels(),
+          String.t(),
+          DateTime.t() | NaiveDateTime.t() | Google.Protobuf.Timestamp.t()
+        ) :: StreamAdapter.t()
   def stream(labels, line, timestamp) do
     stream(labels, entry(line, timestamp))
   end

@@ -16,7 +16,7 @@ defmodule Sleipnir.Client do
   def client(baseurl, opts \\ []) do
     middleware = [
       {Tesla.Middleware.Headers, headers(opts)},
-      {Tesla.Middleware.BaseUrl, baseurl},
+      {Tesla.Middleware.BaseUrl, baseurl}
     ]
 
     Tesla.client(middleware, Tesla.Adapter.Hackney)
