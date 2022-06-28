@@ -10,13 +10,13 @@ defmodule Sleipnir.ClientTest do
 
   defp bypass(_) do
     bypass = Bypass.open()
-    client = bypass.port |> endpoint_url() |> client()
+    client = bypass.port |> endpoint_url() |> new()
     {:ok, bypass: bypass, client: client}
   end
 
   describe "client/1" do
     test "returns a valid client" do
-      %Tesla.Client{} = client("localhost:3000")
+      %Tesla.Client{} = new("localhost:3000")
     end
   end
 
@@ -25,9 +25,15 @@ defmodule Sleipnir.ClientTest do
 
     test "smoke test", %{client: client, bypass: bypass} do
       labels = [{"service", "sleipnir"}]
-      entry = Sleipnir.entry("blablabla")
-      stream = Sleipnir.stream(labels, [entry])
-      request = Sleipnir.request(stream)
+
+      entry =
+        "blablabla"
+        |> Sleipnir.entry()
+
+      request =
+        entry
+        |> Sleipnir.stream(labels)
+        |> Sleipnir.request()
 
       Bypass.expect_once(
         bypass,

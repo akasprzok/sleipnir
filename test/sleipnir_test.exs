@@ -31,7 +31,7 @@ defmodule SleipnirTest do
           }
         )
 
-      assert stream(labels, [another_line, line]) == %StreamAdapter{
+      assert stream([another_line, line], labels) == %StreamAdapter{
                labels: ~s({service="sleipnir",environment="dev"}),
                entries: [line, another_line]
              }

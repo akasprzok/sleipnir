@@ -24,7 +24,13 @@ defmodule Sleipnir.MixProject do
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.html": :test
-      ]
+      ],
+
+      # Hex
+      description: description(),
+      package: package(),
+      source_url: @url,
+      docs: docs()
     ]
   end
 
@@ -52,7 +58,7 @@ defmodule Sleipnir.MixProject do
 
   defp description do
     """
-    Sleipnir is a Loki client.
+    Sleipnir is a Grafana Loki client.
     """
   end
 
@@ -60,6 +66,7 @@ defmodule Sleipnir.MixProject do
     [
       licenses: ["MIT"],
       links: %{"GitHub" => @url},
+      files: ~w(mix.exs lib README.md LICENSE.md),
       maintainers: ["Andreas Kasprzok"]
     ]
   end
