@@ -1,3 +1,7 @@
+![main](https://github.com/akasprzok/sleipnir/actions/workflows/main.yml/badge.svg?branch=main)
+[![Hex](https://img.shields.io/hexpm/v/sleipnir.svg)](https://hex.pm/packages/sleipnir/)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-informational.svg)](https://hexdocs.pm/sleipnir/)
+![License](https://img.shields.io/hexpm/l/sleipnir)
 [![Coverage Status](https://coveralls.io/repos/github/akasprzok/sleipnir/badge.svg?branch=main)](https://coveralls.io/github/akasprzok/sleipnir?branch=main)
 
 # Sleipnir
