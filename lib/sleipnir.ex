@@ -6,14 +6,12 @@ defmodule Sleipnir do
   alias Logproto.{EntryAdapter, PushRequest, StreamAdapter}
   alias Sleipnir.Timestamp
 
-  defdelegate client(base_url, opts \\ []), to: Sleipnir.Client, as: :new
-
   @type labels :: list({String.t(), String.t()})
 
   @doc """
   Returns an entry, which is a log line/string at a given time.
   """
-  @spec entry(term(), DateTime.t() | NaiveDateTime.t() | Google.Protobuf.Timestamp.t()) ::
+  @spec entry(term(), DateTime.t() | NaiveDateTime.t() | Timestamp.t()) ::
           EntryAdapter.t()
   def entry(line, time \\ Timestamp.now())
 

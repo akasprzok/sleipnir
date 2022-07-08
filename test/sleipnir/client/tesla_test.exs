@@ -4,7 +4,7 @@ defmodule Sleipnir.ClientTest do
 
   alias Logproto.{PushRequest, StreamAdapter}
 
-  import Sleipnir.Client
+  import Sleipnir.Client.Tesla
 
   defp endpoint_url(port), do: "http://localhost:#{port}"
 
