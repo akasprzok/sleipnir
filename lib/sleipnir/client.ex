@@ -1,10 +1,9 @@
-defmodule Sleipnir.Client do
+defprotocol Sleipnir.Client do
   @moduledoc """
   The HTTP client that makes requests on behalf of Sleipnir
   """
 
-  alias Logproto.PushRequest
-
+  alias Sleipnir.PushRequest
   @type t :: term()
   @type response :: %{
           status: pos_integer(),
@@ -12,12 +11,6 @@ defmodule Sleipnir.Client do
         }
   @type reason :: term()
 
-  @push_path "/loki/api/v1/push"
-
-  def push_path, do: @push_path
-
-  @callback new(baseurl :: String.t(), opts :: Keyword.t()) :: t()
-
-  @callback push(client :: t(), request :: PushRequest.t()) ::
-              {:ok, response()} | {:error, reason()}
+  @spec push(t(), PushRequest.t()) :: {:ok, response()} | {:error, reason}
+  def push(client, push_request)
 end

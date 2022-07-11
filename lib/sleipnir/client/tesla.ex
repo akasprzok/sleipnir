@@ -2,13 +2,6 @@ defmodule Sleipnir.Client.Tesla do
   @moduledoc """
   Tesla client for Sleipnir.
   """
-
-  alias Logproto.PushRequest
-  alias Sleipnir.Client
-
-  @behaviour Client
-
-  @impl Client
   def new(baseurl, opts \\ []) do
     middleware = [
       {Tesla.Middleware.Headers, headers(opts)},
@@ -16,21 +9,6 @@ defmodule Sleipnir.Client.Tesla do
     ]
 
     Tesla.client(middleware, Tesla.Adapter.Hackney)
-  end
-
-  @impl Client
-  def push(client, %PushRequest{} = request) do
-    {:ok, payload} =
-      request
-      |> PushRequest.encode()
-      |> :snappyer.compress()
-
-    client
-    |> Tesla.post(Client.push_path(), payload)
-    |> case do
-      {:ok, response} -> {:ok, parse(response)}
-      {:error, reason} -> {:error, reason}
-    end
   end
 
   defp headers(opts) do
@@ -42,6 +20,26 @@ defmodule Sleipnir.Client.Tesla do
     case Keyword.get(opts, :org_id) do
       nil -> []
       org_id -> [{"X-Scope-OrgID", org_id}]
+    end
+  end
+end
+
+defimpl Sleipnir.Client, for: Tesla.Client do
+  alias Logproto.PushRequest
+
+  alias Sleipnir.Paths
+
+  def push(client, %PushRequest{} = request) do
+    {:ok, payload} =
+      request
+      |> PushRequest.encode()
+      |> :snappyer.compress()
+
+    client
+    |> Tesla.post(Paths.push(), payload)
+    |> case do
+      {:ok, response} -> {:ok, parse(response)}
+      {:error, reason} -> {:error, reason}
     end
   end
 

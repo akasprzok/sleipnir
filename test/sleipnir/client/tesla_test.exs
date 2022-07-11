@@ -1,6 +1,6 @@
-defmodule Sleipnir.ClientTest do
+defmodule Sleipnir.Client.TeslaTest do
   use ExUnit.Case, async: true
-  doctest Sleipnir.Client
+  doctest Sleipnir.Client.Tesla
 
   alias Logproto.{PushRequest, StreamAdapter}
 
@@ -62,7 +62,7 @@ defmodule Sleipnir.ClientTest do
         end
       )
 
-      client |> push(request)
+      client |> Sleipnir.Client.push(request)
     end
   end
 end
