@@ -62,7 +62,7 @@ defmodule Sleipnir.Client.TeslaTest do
         end
       )
 
-      client |> Sleipnir.Client.push(request)
+      assert {:ok, %{status: 204}} = Sleipnir.push(client, request)
     end
   end
 end

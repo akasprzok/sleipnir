@@ -46,7 +46,6 @@ defmodule Sleipnir.MixProject do
     [
       {:ex_doc, "~> 0.28", only: :dev, runtime: false},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:git_hooks, "~> 0.7", only: [:dev, :test], runtime: false},
       {:protobuf, "~> 0.10.0"},
       {:snappyer, "~> 1.2"},
       {:tesla, "~> 1.4"},

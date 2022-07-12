@@ -19,7 +19,7 @@ defmodule Sleipnir.Client.TestTest do
         |> Sleipnir.stream([{"service", "loki"}])
         |> Sleipnir.request()
 
-      assert {:ok, %{status: 204, headers: []}} == Sleipnir.Client.push(client, request)
+      assert {:ok, %{status: 204, headers: []}} == Sleipnir.push(client, request)
       assert_receive {:push, ^request}
     end
   end
