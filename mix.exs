@@ -1,7 +1,7 @@
 defmodule Sleipnir.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.1"
   @url "https://github.com/akasprzok/sleipnir"
 
   def project do
@@ -52,7 +52,8 @@ defmodule Sleipnir.MixProject do
       {:tesla, "~> 1.4"},
       {:hackney, "~> 1.17"},
       {:bypass, "~> 2.1", only: :test},
-      {:excoveralls, "~> 0.10", only: :test}
+      {:excoveralls, "~> 0.10", only: :test},
+      {:telemetry, "~> 1.1"}
     ]
   end
 

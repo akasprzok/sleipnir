@@ -5,7 +5,19 @@ defmodule Sleipnir.Client.Tesla do
   def new(baseurl, opts \\ []) do
     middleware = [
       {Tesla.Middleware.Headers, headers(opts)},
-      {Tesla.Middleware.BaseUrl, baseurl}
+      {Tesla.Middleware.BaseUrl, baseurl},
+      {Tesla.Middleware.Telemetry, []},
+      {Tesla.Middleware.Retry,
+       [
+         delay: 200,
+         max_retries: 5,
+         max_delay: 5_000,
+         jitter_factor: 0.2,
+         should_retry: fn
+           {:ok, _} -> false
+           {:error, _} -> true
+         end
+       ]}
     ]
 
     Tesla.client(middleware, Tesla.Adapter.Hackney)
@@ -44,6 +56,6 @@ defimpl Sleipnir.Client, for: Tesla.Client do
   end
 
   defp parse(response) do
-    %{status: response.status, headers: response.headers}
+    Map.take(response, [:headers, :status])
   end
 end

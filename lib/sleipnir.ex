@@ -8,6 +8,8 @@ defmodule Sleipnir do
 
   @type labels :: list({String.t(), String.t()})
 
+  defdelegate push(client, request), to: Sleipnir.Client
+
   @doc """
   Returns an entry, which is a log line/string at a given time.
   """

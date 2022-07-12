@@ -6,7 +6,7 @@
 
 # Sleipnir
 
-A Loki client.
+A client for pushing logs to Grafana Loki.
 
 ## Installation
 
@@ -16,7 +16,7 @@ by adding `sleipnir` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:sleipnir, "~> 0.1.0"}
+    {:sleipnir, "~> 0.1.1"}
   ]
 end
 ```
@@ -25,19 +25,39 @@ Documentation may be found at <https://hexdocs.pm/sleipnir>.
 
 ## Usage
 
-Currently only supports the Loki push API.
+The `Sleipnir` module contains functions for creating Loki requests from your data, based on Grafana's protobufs. The important parts are:
 
-First, get a client:
+* `Entries`: timestamped strings
+* `Streams`: collections of entries under a common set of labels.
+* `PushRequests`: collections of streams, all pushed to Loki as a single request.
 
-```elixir
-client = Sleipnir.client("http://localhost:3100", org_id: "tenant1")
-```
-
-Then, create a PushRequest and push it:
+Here's an example:
 
 ```elixir
-request = "I am a log" |> Sleipnir.entry() |> Sleipnir.stream([{"service", "xyz"}]) |> Sleipnir.request()
-Sleipnir.Client.push(client, request)
+entries = [
+  Sleipnir.entry("I am a log line"),
+  Sleipnir.entry("I am another log line")
+]
+labels = [
+  {"cluster", "ops-cluster-1"},
+  {"namespace", "loki-dev"}
+]
+stream = Sleipnir.stream(entries, labels)
+request = Sleipnir.request(stream)
 ```
 
-There are a variety of ways to create a request. Consult the docs for more info!
+To send the requests to Loki, Sleipnir includes a Tesla client that aims to provide sensible defaults.
+
+```elixir
+client = Sleipnir.Client.Tesla.new("http://localhost:3100", org_id: "tenant1")
+
+{:ok, %{status: 204}} = Sleipnir.push(client, request)
+```
+
+## Customizing the Client
+
+Custom clients can be implemented via the `[Sleipnir.Client](lib/sleipnir/client.ex)` protocol.
+
+A default implementation is provided for the `[Tesla.Client](/lib/sleipnir/client/tesla.ex) struct` which zips the push request and sends it to the standard `/loki/api/v1/push` path.
+
+Also included is the `[Sleipnir.Client.Test client](lib/sleipnir/client/test.ex)` which sends any requests pushed to it to the provided pid. Useful for testing without the need for bypass or Tesla.Mock.

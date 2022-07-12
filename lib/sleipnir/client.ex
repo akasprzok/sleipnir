@@ -6,7 +6,7 @@ defprotocol Sleipnir.Client do
   alias Sleipnir.PushRequest
   @type t :: term()
   @type response :: %{
-          status: pos_integer(),
+          status: integer(),
           headers: [{binary(), binary()}]
         }
   @type reason :: term()
