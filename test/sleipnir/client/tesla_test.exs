@@ -1,10 +1,10 @@
-defmodule Sleipnir.ClientTest do
+defmodule Sleipnir.Client.TeslaTest do
   use ExUnit.Case, async: true
-  doctest Sleipnir.Client
+  doctest Sleipnir.Client.Tesla
 
   alias Logproto.{PushRequest, StreamAdapter}
 
-  import Sleipnir.Client
+  import Sleipnir.Client.Tesla
 
   defp endpoint_url(port), do: "http://localhost:#{port}"
 
@@ -62,7 +62,7 @@ defmodule Sleipnir.ClientTest do
         end
       )
 
-      client |> push(request)
+      assert {:ok, %{status: 204}} = Sleipnir.push(client, request)
     end
   end
 end

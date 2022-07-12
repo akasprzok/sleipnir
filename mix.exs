@@ -1,7 +1,7 @@
 defmodule Sleipnir.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.1"
   @url "https://github.com/akasprzok/sleipnir"
 
   def project do
@@ -46,13 +46,13 @@ defmodule Sleipnir.MixProject do
     [
       {:ex_doc, "~> 0.28", only: :dev, runtime: false},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:git_hooks, "~> 0.7", only: [:dev, :test], runtime: false},
       {:protobuf, "~> 0.10.0"},
       {:snappyer, "~> 1.2"},
       {:tesla, "~> 1.4"},
       {:hackney, "~> 1.17"},
       {:bypass, "~> 2.1", only: :test},
-      {:excoveralls, "~> 0.10", only: :test}
+      {:excoveralls, "~> 0.10", only: :test},
+      {:telemetry, "~> 1.1"}
     ]
   end
 
