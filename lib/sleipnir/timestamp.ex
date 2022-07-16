@@ -17,6 +17,7 @@ defmodule Sleipnir.Timestamp do
     {seconds, microseconds} =
       time
       |> DateTime.to_gregorian_seconds()
+      |> to_epoch()
 
     Timestamp.new!(seconds: seconds, nanos: microseconds * 1000)
   end

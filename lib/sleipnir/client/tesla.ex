@@ -2,10 +2,22 @@ defmodule Sleipnir.Client.Tesla do
   @moduledoc """
   Tesla client for Sleipnir.
   """
-  def new(baseurl, opts \\ []) do
+
+  @type base_url :: String.t()
+  @type opts :: Keyword.t()
+
+  @doc """
+  Returns a Tesla client set up to send logs to Loki.
+
+  ## Options
+
+  - `:org_id` - Must be specified when using Loki in multi-tenancy mode (i.e. auth_enabled is `true`). Sets the X-Scope_orgID header accordingly Sets the X-Scope-OrgID header accordingly
+  """
+  @spec new(base_url, opts) :: Tesla.Client.t()
+  def new(base_url, opts \\ []) do
     middleware = [
       {Tesla.Middleware.Headers, headers(opts)},
-      {Tesla.Middleware.BaseUrl, baseurl},
+      {Tesla.Middleware.BaseUrl, base_url},
       {Tesla.Middleware.Telemetry, []},
       {Tesla.Middleware.Retry,
        [
@@ -41,6 +53,10 @@ defimpl Sleipnir.Client, for: Tesla.Client do
 
   alias Sleipnir.Paths
 
+  @type opts :: Keyword.t()
+  @type client :: Tesla.Client.t()
+
+  @spec push(client, PushRequest.t(), opts) :: Sleipnir.Client.response()
   def push(client, %PushRequest{} = request, opts \\ []) do
     {:ok, payload} =
       request

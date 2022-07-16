@@ -5,7 +5,7 @@ entries = [
   entry("I too am a log line")
 ]
 labels = [
-  {"namspace", "loki"},
+  {"namespace", "loki"},
   {"region", "us-east-1"}
 ]
 stream = stream(entries, labels)

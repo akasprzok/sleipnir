@@ -1,19 +1,47 @@
 defmodule Sleipnir do
   @moduledoc """
-  Documentation for `Sleipnir`.
+  Sleipnir consists of functions to create valid PushRequests to
+  send to Grafana Loki, as well as a protocol for clients and a default implementation
+  thereof for Tesla clients.
+  This gives the user of this library flexibility in which parts they would like to use,
+  as well as a quick way to start sending requests to Loki by using Tesla.
+
+  Functions generally return the underlying Protobufs:
+    * `Google.Protobuf.Timestamp`: Standard Protobuf for timestamps.
+      Represented as seconds and nanoseconds encoded in Propleptic Gregorian Calendar.
+      The Sleipnir.Timestamp module provides functions for manipulating and creating
+      timestamps from Elixir-native types.
+    * `Logproto.EntryAdapter`: An entry is a log line at a certain time
+    * `Logproto.StreamAdapter`: A stream is a collection of entries under a common set of labels.
+    * `Logproto.PushRequest`: A request is a collection of streams, and can be sent to Grafana Loki.
   """
 
   alias Logproto.{EntryAdapter, PushRequest, StreamAdapter}
   alias Sleipnir.Timestamp
 
+
+  @typedoc ~S"""
+  Loki labels are easily represented in Elixir as a list of String tuples.
+
+    labels = [
+      {"namespace", "loki"},
+      {"region", "us-east-1"}
+    ]
+  """
   @type labels :: list({String.t(), String.t()})
 
   defdelegate push(client, request, opts \\ []), to: Sleipnir.Client
 
   @doc """
   Returns an entry, which is a log line/string at a given time.
+  The timestamp can be of type DateTime, NaiveDateTime, or Google.Protobuf.Timestamp.
+  If no timestamp is provided, the current time is used.
+
+
+    entry1 = Sleipnir.entry("I am a log line")
+    entry2 = Sleipnir.entry("I am also a log line", DateTime.utc_now())
   """
-  @spec entry(term(), DateTime.t() | NaiveDateTime.t() | Timestamp.t()) ::
+  @spec entry(term(), DateTime.t() | NaiveDateTime.t() | Google.Protobuf.Timestamp.t()) ::
           EntryAdapter.t()
   def entry(line, time \\ Timestamp.now())
 
@@ -31,6 +59,8 @@ defmodule Sleipnir do
 
   @doc """
   A stream consists of one or more entries under a common set of labels.
+
+    stream = Sleipnir.stream([entry1, entry2], [{"label", "value"}])
   """
   @spec stream(labels(), EntryAdapter.t() | list(EntryAdapter.t())) :: StreamAdapter.t()
   def stream(%EntryAdapter{} = entry, labels) do
@@ -69,6 +99,11 @@ defmodule Sleipnir do
     |> stream(labels)
   end
 
+  @doc """
+  Creates a PushRequest from one or more streams.
+
+    request = Sleipnir.request(stream)
+  """
   @spec request(StreamAdapter.t() | list(StreamAdapter.t())) :: PushRequest.t()
   def request(%StreamAdapter{} = stream) do
     stream
