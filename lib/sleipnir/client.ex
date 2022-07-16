@@ -11,6 +11,6 @@ defprotocol Sleipnir.Client do
         }
   @type reason :: term()
 
-  @spec push(t(), PushRequest.t()) :: {:ok, response()} | {:error, reason}
-  def push(client, push_request)
+  @spec push(t(), PushRequest.t(), Keyword.t()) :: {:ok, response()} | {:error, reason}
+  def push(client, push_request, opts \\ [])
 end

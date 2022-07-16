@@ -64,5 +64,47 @@ defmodule Sleipnir.Client.TeslaTest do
 
       assert {:ok, %{status: 204}} = Sleipnir.push(client, request)
     end
+
+    test "set custom path", %{bypass: bypass, client: client} do
+      labels = [{"service", "sleipnir"}]
+
+      entry =
+        "blablabla"
+        |> Sleipnir.entry()
+
+      request =
+        entry
+        |> Sleipnir.stream(labels)
+        |> Sleipnir.request()
+
+      Bypass.expect_once(
+        bypass,
+        "POST",
+        "/custom/path",
+        fn conn ->
+          {:ok, payload, _conn} = Plug.Conn.read_body(conn)
+          {:ok, decompressed_payload} = :snappyer.decompress(payload)
+
+          %PushRequest{
+            streams: [
+              %StreamAdapter{
+                entries: [
+                  ^entry
+                ],
+                labels: ~s({service="sleipnir"})
+              }
+            ]
+          } = decompressed_payload |> PushRequest.decode()
+
+          Plug.Conn.resp(
+            conn,
+            204,
+            ""
+          )
+        end
+      )
+
+      assert {:ok, %{status: 204}} = Sleipnir.push(client, request, path: "/custom/path")
+    end
   end
 end

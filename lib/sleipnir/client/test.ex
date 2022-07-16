@@ -12,7 +12,7 @@ end
 defimpl Sleipnir.Client, for: Sleipnir.Client.Test do
   alias Logproto.PushRequest
 
-  def push(client, %PushRequest{} = request) do
+  def push(client, %PushRequest{} = request, _opts \\ []) do
     send(client.pid, {:push, request})
     {:ok, %{status: 204, headers: []}}
   end

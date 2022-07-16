@@ -41,14 +41,16 @@ defimpl Sleipnir.Client, for: Tesla.Client do
 
   alias Sleipnir.Paths
 
-  def push(client, %PushRequest{} = request) do
+  def push(client, %PushRequest{} = request, opts \\ []) do
     {:ok, payload} =
       request
       |> PushRequest.encode()
       |> :snappyer.compress()
 
+    path = Keyword.get(opts, :path, Paths.push())
+
     client
-    |> Tesla.post(Paths.push(), payload)
+    |> Tesla.post(path, payload)
     |> case do
       {:ok, response} -> {:ok, parse(response)}
       {:error, reason} -> {:error, reason}
