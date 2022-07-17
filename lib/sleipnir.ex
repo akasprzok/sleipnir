@@ -19,7 +19,10 @@ defmodule Sleipnir do
   alias Logproto.{EntryAdapter, PushRequest, StreamAdapter}
   alias Sleipnir.Timestamp
 
-
+  @type timestamp :: Google.Protobuf.Timestamp.t()
+  @type entry :: EntryAdapter.t()
+  @type stream :: StreamAdapter.t()
+  @type request :: PushRequest.t()
   @typedoc ~S"""
   Loki labels are easily represented in Elixir as a list of String tuples.
 
@@ -29,6 +32,7 @@ defmodule Sleipnir do
     ]
   """
   @type labels :: list({String.t(), String.t()})
+
 
   defdelegate push(client, request, opts \\ []), to: Sleipnir.Client
 
@@ -41,8 +45,7 @@ defmodule Sleipnir do
     entry1 = Sleipnir.entry("I am a log line")
     entry2 = Sleipnir.entry("I am also a log line", DateTime.utc_now())
   """
-  @spec entry(term(), DateTime.t() | NaiveDateTime.t() | Google.Protobuf.Timestamp.t()) ::
-          EntryAdapter.t()
+  @spec entry(term(), DateTime.t() | NaiveDateTime.t() | timestamp()) :: entry()
   def entry(line, time \\ Timestamp.now())
 
   def entry(line, %DateTime{} = timestamp) do
@@ -62,7 +65,7 @@ defmodule Sleipnir do
 
     stream = Sleipnir.stream([entry1, entry2], [{"label", "value"}])
   """
-  @spec stream(labels(), EntryAdapter.t() | list(EntryAdapter.t())) :: StreamAdapter.t()
+  @spec stream(labels(), entry() | list(entry())) :: stream()
   def stream(%EntryAdapter{} = entry, labels) do
     entry
     |> List.wrap()
@@ -91,8 +94,8 @@ defmodule Sleipnir do
   @spec stream(
           labels(),
           String.t(),
-          DateTime.t() | NaiveDateTime.t() | Google.Protobuf.Timestamp.t()
-        ) :: StreamAdapter.t()
+          DateTime.t() | NaiveDateTime.t() | timestamp()
+        ) :: stream()
   def stream(line, labels, timestamp) do
     line
     |> entry(timestamp)
@@ -104,7 +107,7 @@ defmodule Sleipnir do
 
     request = Sleipnir.request(stream)
   """
-  @spec request(StreamAdapter.t() | list(StreamAdapter.t())) :: PushRequest.t()
+  @spec request(stream() | list(stream())) :: request()
   def request(%StreamAdapter{} = stream) do
     stream
     |> List.wrap()

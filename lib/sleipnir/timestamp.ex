@@ -7,7 +7,7 @@ defmodule Sleipnir.Timestamp do
 
   defdelegate new, to: Timestamp, as: :new
 
-  @spec from(Logger.Formatter.time() | NaiveDateTime.t()) :: Timestamp.t()
+  @spec from(Logger.Formatter.time() | NaiveDateTime.t()) :: Sleipnir.timestamp()
   def from({{yy, mm, dd}, {hh, mi, ss, ms}}) do
     NaiveDateTime.from_erl!({{yy, mm, dd}, {hh, mi, ss}}, {ms, 3})
     |> from()
@@ -31,7 +31,7 @@ defmodule Sleipnir.Timestamp do
     Timestamp.new!(seconds: seconds, nanos: microseconds * 1000)
   end
 
-  @spec now :: Timestamp.t()
+  @spec now :: Sleipnir.timestamp()
   def now do
     NaiveDateTime.utc_now() |> from()
   end
