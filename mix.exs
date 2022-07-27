@@ -54,7 +54,7 @@ defmodule Sleipnir.MixProject do
       {:excoveralls, "~> 0.10", only: :test},
       # Formatting & Docs
       {:ex_doc, "~> 0.28", only: :dev, runtime: false},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
 
