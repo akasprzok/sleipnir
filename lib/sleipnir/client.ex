@@ -4,6 +4,7 @@ defprotocol Sleipnir.Client do
   """
 
   alias Sleipnir.PushRequest
+
   @typedoc """
   Can be any type that has an implementation for the Sleipnir.Client protocol.
   Default implementation is provided for Tesla.Client.

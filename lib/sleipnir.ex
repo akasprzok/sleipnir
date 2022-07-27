@@ -33,7 +33,6 @@ defmodule Sleipnir do
   """
   @type labels :: list({String.t(), String.t()})
 
-
   defdelegate push(client, request, opts \\ []), to: Sleipnir.Client
 
   @doc """
