@@ -16,7 +16,7 @@ by adding `sleipnir` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:sleipnir, "~> 0.1.1"}
+    {:sleipnir, "~> 0.1"}
   ]
 end
 ```
