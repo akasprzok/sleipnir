@@ -48,7 +48,7 @@ defmodule Sleipnir.MixProject do
       {:snappyer, "~> 1.2"},
       {:tesla, "~> 1.4"},
       {:hackney, "~> 1.17"},
-      {:telemetry, "~> 1.1"},
+      {:telemetry, "~> 1.0 or ~> 1.1"},
       # Testing
       {:bypass, "~> 2.1", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
