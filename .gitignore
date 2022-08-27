@@ -29,3 +29,5 @@ sleipnir-*.tar
 /.vscode/
 
 /.data
+
+.DS_Store

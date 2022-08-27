@@ -64,7 +64,7 @@ defmodule Sleipnir do
 
     stream = Sleipnir.stream([entry1, entry2], [{"label", "value"}])
   """
-  @spec stream(labels(), entry() | list(entry())) :: stream()
+  @spec stream(entry() | list(entry()), labels()) :: stream()
   def stream(%EntryAdapter{} = entry, labels) do
     entry
     |> List.wrap()

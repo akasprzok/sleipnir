@@ -6,11 +6,6 @@ defprotocol Sleipnir.Client do
   alias Sleipnir.PushRequest
 
   @typedoc """
-  Can be any type that has an implementation for the Sleipnir.Client protocol.
-  Default implementation is provided for Tesla.Client.
-  """
-  @type t :: term()
-  @typedoc """
   Returned if the request was successfully sent.
   Loki will generally respond with status 204 No Content on a successful request.
   Headers should contain the headers from the response.
@@ -26,6 +21,6 @@ defprotocol Sleipnir.Client do
   Pushes the request to Loki.
   Implementations may define their own options.
   """
-  @spec push(t(), PushRequest.t(), Keyword.t()) :: result()
+  @spec push(Sleipnir.Client.t(), PushRequest.t(), Keyword.t()) :: result()
   def push(client, push_request, opts \\ [])
 end
