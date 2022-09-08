@@ -19,10 +19,6 @@ defmodule Sleipnir do
   alias Logproto.{EntryAdapter, PushRequest, StreamAdapter}
   alias Sleipnir.Timestamp
 
-  @type timestamp :: Google.Protobuf.Timestamp.t()
-  @type entry :: EntryAdapter.t()
-  @type stream :: StreamAdapter.t()
-  @type request :: PushRequest.t()
   @typedoc ~S"""
   Loki labels are easily represented in Elixir as a list of String tuples.
 
@@ -44,7 +40,7 @@ defmodule Sleipnir do
     entry1 = Sleipnir.entry("I am a log line")
     entry2 = Sleipnir.entry("I am also a log line", DateTime.utc_now())
   """
-  @spec entry(term(), DateTime.t() | NaiveDateTime.t() | timestamp()) :: entry()
+  @spec entry(term(), DateTime.t() | NaiveDateTime.t() | Timestamp.t()) :: EntryAdapter.t()
   def entry(line, time \\ Timestamp.now())
 
   def entry(line, %DateTime{} = timestamp) do
@@ -64,7 +60,7 @@ defmodule Sleipnir do
 
     stream = Sleipnir.stream([entry1, entry2], [{"label", "value"}])
   """
-  @spec stream(entry() | list(entry()), labels()) :: stream()
+  @spec stream(EntryAdapter.t() | list(EntryAdapter.t()), labels()) :: StreamAdapter.t()
   def stream(%EntryAdapter{} = entry, labels) do
     entry
     |> List.wrap()
@@ -93,8 +89,8 @@ defmodule Sleipnir do
   @spec stream(
           labels(),
           String.t(),
-          DateTime.t() | NaiveDateTime.t() | timestamp()
-        ) :: stream()
+          DateTime.t() | NaiveDateTime.t() | Timestamp.t()
+        ) :: StreamAdapter.t()
   def stream(line, labels, timestamp) do
     line
     |> entry(timestamp)
@@ -106,7 +102,7 @@ defmodule Sleipnir do
 
     request = Sleipnir.request(stream)
   """
-  @spec request(stream() | list(stream())) :: request()
+  @spec request(StreamAdapter.t() | list(StreamAdapter.t())) :: PushRequest.t()
   def request(%StreamAdapter{} = stream) do
     stream
     |> List.wrap()
@@ -116,8 +112,6 @@ defmodule Sleipnir do
   def request(streams) when is_list(streams) do
     PushRequest.new!(streams: streams)
   end
-
-  defp sort_entries(%EntryAdapter{} = entry), do: [entry]
 
   defp sort_entries(entries) when is_list(entries) do
     entries

@@ -5,6 +5,8 @@ defmodule Sleipnir.Timestamp do
 
   alias Google.Protobuf.Timestamp
 
+  @type t :: Google.Protobuf.Timestamp.t()
+
   defdelegate new, to: Timestamp, as: :new
 
   @spec from(Logger.Formatter.time() | NaiveDateTime.t()) :: Sleipnir.timestamp()

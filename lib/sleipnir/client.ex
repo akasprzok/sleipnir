@@ -3,8 +3,6 @@ defprotocol Sleipnir.Client do
   The HTTP client that makes requests on behalf of Sleipnir
   """
 
-  alias Sleipnir.PushRequest
-
   @typedoc """
   Returned if the request was successfully sent.
   Loki will generally respond with status 204 No Content on a successful request.
@@ -21,6 +19,6 @@ defprotocol Sleipnir.Client do
   Pushes the request to Loki.
   Implementations may define their own options.
   """
-  @spec push(Sleipnir.Client.t(), PushRequest.t(), Keyword.t()) :: result()
+  @spec push(Sleipnir.Client.t(), Sleipnir.request(), Keyword.t()) :: result()
   def push(client, push_request, opts \\ [])
 end
