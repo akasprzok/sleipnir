@@ -44,17 +44,18 @@ defmodule Sleipnir.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:hackney, "~> 1.17"},
       {:protobuf, "~> 0.10.0"},
       {:snappyer, "~> 1.2"},
-      {:tesla, "~> 1.4"},
-      {:hackney, "~> 1.17"},
       {:telemetry, "~> 1.0 or ~> 1.1"},
+      {:tesla, "~> 1.4"},
       # Testing
       {:bypass, "~> 2.1", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
       # Formatting & Docs
-      {:ex_doc, "~> 0.28", only: :dev, runtime: false},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.28", only: :dev, runtime: false}
     ]
   end
 
